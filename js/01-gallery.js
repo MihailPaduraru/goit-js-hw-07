@@ -1,0 +1,49 @@
+import { galleryItems } from "./gallery-items.js";
+
+console.log("galleryItems");
+
+const listEl = document.querySelector(".gallery");
+
+let currentLightbox = null;
+
+galleryItems.forEach((item) => {
+  const listItemEl = document.createElement("li");
+  listItemEl.classList.add("gallery__item");
+  listItemEl.innerHTML = `<a class="gallery__link" href="${item.original}">
+             <img class= "gallery__img" 
+             src="${item.preview}"
+             data-source="${item.original}"
+             alt= "${item.description}" />
+             </a>`;
+  listEl.append(listItemEl);
+});
+
+listEl.addEventListener("click", openImageInLightbox);
+
+function openImageInLightbox(event) {
+  const clickedOn = event.target;
+
+  if (event.target.nodeName !== "IMG") {
+    return;
+  }
+
+  event.preventDefault();
+
+  const largeImageUrl = clickedOn.dataset.source;
+
+  if (currentLightbox) {
+    currentLightbox.close();
+  }
+
+  currentLightbox = basicLightbox.create(
+    `<img width="1400" height="900" src="${largeImageUrl}" />`
+  );
+
+  currentLightbox.show();
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && currentLightbox) {
+    currentLightbox.close();
+  }
+});
